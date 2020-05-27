@@ -36,15 +36,15 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
             if (process.port == _sys.self().port) {
               continue;
             }
-            if (!_aliveProcesses.contains(process) && !_suspected.contains(process)) {
+            if (!contains(_aliveProcesses, process) && !contains(_suspected, process)) {
               _suspected.add(process);
               var message = Message();
               message.type = Message_Type.EPFD_SUSPECT;
               message.epfdSuspect = EpfdSuspect();
               message.epfdSuspect.process = process;
               _sys.emitMessage(message);
-            } else if (_aliveProcesses.contains(process) && _suspected.contains(process)) {
-              _suspected.remove(process);
+            } else if (contains(_aliveProcesses, process) && contains(_suspected, process)) {
+              remove(_suspected, process);
 
               var message = Message();
               message.type = Message_Type.EPFD_RESTORE;
@@ -100,5 +100,27 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
       message.type = Message_Type.EPFD_TIMEOUT;
       _sys.emitMessage(message);
     });
+  }
+
+  bool contains(List<ProcessId> list, ProcessId elem) {
+    for (var e in list) {
+      if (e.port == elem.port) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void remove(List<ProcessId> list, ProcessId elem) {
+    var index = -1;
+    for (var i = 0; i < list.length; ++i) {
+      if (list[i].port == elem.port) {
+        index = i;
+        break;
+      }
+    }
+    if (index != -1) {
+      list.removeAt(index);
+    }
   }
 }
