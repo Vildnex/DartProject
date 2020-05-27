@@ -1,0 +1,4 @@
+{"level":"info","time":1590416816061,"message":"Hub listening on 127.0.0.1:5000"}
+{"level":"info","time":1590416816061,"message":"ref-3: listening on 127.0.0.1:5003"}
+{"level":"info","time":1590416816061,"message":"ref-1: listening on 127.0.0.1:5001"}
+{"level":"info","time":1590416816062,"message":"ref-2: listening on 127.0.0.1:5002"}
