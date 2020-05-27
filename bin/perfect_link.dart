@@ -80,9 +80,6 @@ class PerfectLike extends AlgInterface {
         var byteData = ByteData.view(message.buffer);
         var uint8 = toSend.writeToBuffer();
 
-        byteData.setUint32(0, 0);
-        byteData.setUint32(0, 0);
-        byteData.setUint32(0, 0);
         byteData.setUint32(0, uint8.lengthInBytes);
 
         _socket.add(message);

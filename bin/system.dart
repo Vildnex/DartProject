@@ -48,7 +48,6 @@ class System {
 
   Future<void> init() async {
     _receiveMessage();
-//    _algorithms.add(PerfectLike(this, _ip, port));
     var pf = await PerfectLike.connect(this, _ip, port);
     _algorithms.add(pf);
     var socket = await Socket.connect(_ip, hub_port);
@@ -78,10 +77,6 @@ class System {
     var byteData = ByteData.view(message.buffer);
 
     var buffer = toSend.writeToBuffer();
-
-    byteData.setUint32(0, 0);
-    byteData.setUint32(0, 0);
-    byteData.setUint32(0, 0);
     byteData.setUint32(0, buffer.lengthInBytes);
 
     socket.add(message);
@@ -153,6 +148,7 @@ class System {
 
         socket.add(message);
         socket.add(buffer);
+        await socket.flush();
         await socket.close();
         used = true;
       }

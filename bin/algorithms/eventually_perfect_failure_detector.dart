@@ -14,8 +14,8 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
 
   EventuallyPerfectFailureDetector(this._sys) {
     _delay = DELTA;
+    _aliveProcesses = _sys.processes.toList();
     delay(_delay);
-    _aliveProcesses = _sys.processes;
   }
 
 //  @override
@@ -36,20 +36,14 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
             if (process.port == _sys.self().port) {
               continue;
             }
-            var f1 = !contains(_aliveProcesses, process);
-            var f2 = !contains(_suspected, process);
-
-            var f_1 = contains(_aliveProcesses, process);
-            var f_2 = contains(_suspected, process);
-            var kk = 0;
-            if (f1 && f2) {
+            if (!contains(_aliveProcesses, process) && !contains(_suspected, process)) {
               _suspected.add(process);
               var message = Message();
               message.type = Message_Type.EPFD_SUSPECT;
               message.epfdSuspect = EpfdSuspect();
               message.epfdSuspect.process = process;
               _sys.emitMessage(message);
-            } else if (f_1 && f_2) {
+            } else if (contains(_aliveProcesses, process) && contains(_suspected, process)) {
               remove(_suspected, process);
 
               var message = Message();
@@ -71,7 +65,6 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
           _aliveProcesses.clear();
           delay(_delay);
         }
-//        return Future.value(true);
         return true;
       case Message_Type.PL_DELIVER:
         {
@@ -88,7 +81,6 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
             message.systemId = _sys.systemID;
             _sys.emitMessage(message);
 
-//            return Future.value(true);
             return true;
           } else if (msg.plDeliver.message.type == Message_Type.EPFD_HEARTBEAT_REPLY) {
             _aliveProcesses.add(msg.plDeliver.sender);
@@ -108,25 +100,7 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
     });
   }
 
-  bool contains(List<ProcessId> list, ProcessId elem) {
-    for (var e in list) {
-      if (e.port == elem.port) {
-        return true;
-      }
-    }
-    return false;
-  }
+  bool contains(List<ProcessId> list, ProcessId elem) => list.any((e) => e.port == elem.port);
 
-  void remove(List<ProcessId> list, ProcessId elem) {
-    var index = -1;
-    for (var i = 0; i < list.length; ++i) {
-      if (list[i].port == elem.port) {
-        index = i;
-        break;
-      }
-    }
-    if (index != -1) {
-      list.removeAt(index);
-    }
-  }
+  void remove(List<ProcessId> list, ProcessId elem) => list.removeWhere((e) => e.port == elem.port);
 }
