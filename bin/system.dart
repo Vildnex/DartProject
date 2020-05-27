@@ -141,9 +141,6 @@ class System {
 
         var buffer = toSend.writeToBuffer();
 
-        byteData.setUint32(0, 0);
-        byteData.setUint32(0, 0);
-        byteData.setUint32(0, 0);
         byteData.setUint32(0, buffer.lengthInBytes);
 
         socket.add(message);
@@ -161,7 +158,8 @@ class System {
           return;
         }
       }
-      emitMessage(msg);
+//      TODO: CHECK IT LATER
+//      emitMessage(msg);
     });
   }
 

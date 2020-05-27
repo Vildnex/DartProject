@@ -27,7 +27,7 @@ class EventualLeadDetector extends AlgInterface {
         return true;
       case Message_Type.EPFD_RESTORE:
         {
-          _suspected.remove(msg.epfdSuspect.process);
+          remove(_suspected, msg.epfdSuspect.process);
           checkAndSetLeader();
         }
         return true;
@@ -39,7 +39,7 @@ class EventualLeadDetector extends AlgInterface {
     var leader = ProcessId();
     var maxRank = 0;
     _sys.processes.forEach((process) {
-      if (!_suspected.contains(process)) {
+      if (!contains(_suspected, process)) {
         if (process.rank > maxRank) {
           leader = process;
           maxRank = process.rank;
@@ -56,4 +56,8 @@ class EventualLeadDetector extends AlgInterface {
       _sys.emitMessage(message);
     }
   }
+
+  bool contains(List<ProcessId> list, ProcessId elem) => list.any((e) => e.port == elem.port);
+
+  void remove(List<ProcessId> list, ProcessId elem) => list.removeWhere((e) => e.port == elem.port);
 }
