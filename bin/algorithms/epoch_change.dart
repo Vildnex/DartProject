@@ -61,7 +61,7 @@ class EpochChange extends AlgInterface {
               message.plSend.message.type = Message_Type.EC_NACK_;
               message.abstractionId = 'ec';
               message.systemId = _sys.systemID;
-              print('NACK_');
+              print('Nack!');
               _sys.emitMessage(message);
             }
           }
@@ -83,7 +83,7 @@ class EpochChange extends AlgInterface {
             message.bebBroadcast.message.systemId = _sys.systemID;
 
             _sys.emitMessage(message);
-            print('EC_NEW_EPOCH_');
+            print('EcNewEpoch!');
           }
         }
 //        return Future.value(true);

@@ -160,18 +160,21 @@ class System {
         return;
       }
       for (var alg in _algorithms) {
-        await alg.handle(msg);
+        if (await alg.handle(msg)) {
+          return;
+        }
       }
       emitMessage(msg);
     });
   }
 
   void begin() {
-    _algorithms.add(BestEffortBroadcast(this));
+//    _algorithms.add(BestEffortBroadcast(this));
     _algorithms.add(EpochChange(this));
     _algorithms.add(EventualLeadDetector(this));
     _algorithms.add(EventuallyPerfectFailureDetector(this));
     _algorithms.add(UniformConsensus(this));
+    _algorithms.add(BestEffortBroadcast(this));
   }
 
   void beginNewEpoch(int timeStamp, Tuple2<int, Value> state) {

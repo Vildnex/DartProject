@@ -49,14 +49,14 @@ class EventualLeadDetector extends AlgInterface {
         }
       }
     });
-    print("TEST");
+//    print("TEST");
     _leader ??= leader;
     if (_leader.port != leader.port) {
       var message = Message();
       message.eldTrust = EldTrust();
       message.type = Message_Type.ELD_TRUST;
       message.eldTrust.process = _leader;
-      print('TRUESTED procees: ' + _leader.port.toString());
+      print('Trust process: ' + _leader.port.toString());
       _sys.emitMessage(message);
     }
   }

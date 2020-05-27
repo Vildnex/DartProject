@@ -37,7 +37,7 @@ class UniformConsensus extends AlgInterface {
         return true;
       case Message_Type.EC_START_EPOCH:
         {
-          print('Start epoch! :D');
+          print('Start epoch!!!');
           _newTsLeader = Tuple2<int, ProcessId>(msg.ecStartEpoch.newTimestamp, msg.ecStartEpoch.newLeader);
           var message = Message();
           message.type = Message_Type.EP_ABORT;
@@ -50,7 +50,7 @@ class UniformConsensus extends AlgInterface {
           if (_etsLeadPair.item1 == msg.epAborted.ets) {
             _etsLeadPair = Tuple2<int, ProcessId>(_newTsLeader.item1, _newTsLeader.item2);
             _proposed = false;
-            print('New Epoch');
+            print('Started new epoch!');
             var state = Tuple2<int, Value>(msg.epAborted.valueTimestamp, msg.epAborted.value);
             _sys.beginNewEpoch(_etsLeadPair.item1, state);
             checkIfEmit();
@@ -60,7 +60,7 @@ class UniformConsensus extends AlgInterface {
         return true;
       case Message_Type.EP_DECIDE:
         {
-          print('EP_DECIDE');
+          print('ep decide!');
           if (msg.epDecide.ets == _etsLeadPair.item1 && !_decided) {
             _decided = true;
 
@@ -82,7 +82,7 @@ class UniformConsensus extends AlgInterface {
   void checkIfEmit() {
     if (_etsLeadPair.item2.port == _sys.self().port && _val.defined && !_proposed) {
       _proposed = true;
-      print('EP PROPOSE');
+      print('ep propose');
       var message = Message();
       message.type = Message_Type.EP_PROPOSE;
       message.epPropose = EpPropose();

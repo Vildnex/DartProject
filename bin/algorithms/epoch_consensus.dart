@@ -29,14 +29,14 @@ class EpochConsensus extends AlgInterface {
     switch (msg.type) {
       case Message_Type.EP_PROPOSE:
         {
-          print('EP_PROPOSE');
+          print('Ep propose!');
           _temp = msg.epPropose.value;
           var message = Message();
           message.type = Message_Type.BEB_BROADCAST;
           message.bebBroadcast = BebBroadcast();
           message.bebBroadcast.message = Message();
           message.bebBroadcast.message.type = Message_Type.EP_READ_;
-
+          print('Sent to bebBroadcast!');
           _sys.emitMessage(message);
         }
         return true;
@@ -45,7 +45,7 @@ class EpochConsensus extends AlgInterface {
           switch (msg.bebBroadcast.message.type) {
             case Message_Type.EP_READ_:
               {
-                print('EP_READ_ from: ' + msg.bebDeliver.sender.port.toString());
+                print('Ep read! from: ' + msg.bebDeliver.sender.port.toString());
                 var message = Message();
                 message.type = Message_Type.PL_SEND;
                 message.plSend = PlSend();
@@ -63,7 +63,7 @@ class EpochConsensus extends AlgInterface {
               return true;
             case Message_Type.EP_WRITE_:
               {
-                print('EP_WRITE_');
+                print('Ep write!');
                 _state = Tuple2<int, Value>(_timeStamp, msg.bebDeliver.message.epWrite.value);
 
                 var message = Message();
@@ -76,14 +76,14 @@ class EpochConsensus extends AlgInterface {
                 message.abstractionId = 'ep';
                 message.systemId = _sys.systemID;
 
-                print('EP_WRITE_ to: ' + msg.bebDeliver.sender.port.toString());
+                print('sent ep write to: ' + msg.bebDeliver.sender.port.toString());
                 _sys.emitMessage(message);
               }
 //              return Future.value(true);
               return true;
             case Message_Type.EP_DECIDED_:
               {
-                print('EP_DECIDED_');
+                print('Ep decide!');
                 var message = Message();
                 message.type = Message_Type.EP_DECIDE;
                 message.epDecide = EpDecide();
@@ -102,7 +102,7 @@ class EpochConsensus extends AlgInterface {
           switch (msg.plDeliver.message.type) {
             case Message_Type.EP_STATE_:
               {
-                print('EP_STATE_');
+                print('Ep state!');
                 var state_port = msg.plDeliver.sender.port;
                 var ts = msg.plDeliver.message.epState.valueTimestamp;
                 var val = msg.plDeliver.message.epState.value;
@@ -138,7 +138,7 @@ class EpochConsensus extends AlgInterface {
               return true;
             case Message_Type.EP_ACCEPT_:
               {
-                print('EP_ACCEPT_');
+                print('Ep accepted!');
                 _accepted += 1;
                 if (_accepted > _sys.processes.length / 2) {
                   _accepted = 0;
@@ -162,7 +162,7 @@ class EpochConsensus extends AlgInterface {
 //        return true;
       case Message_Type.EP_ABORT:
         {
-          print('EP_ABORT');
+          print('Ep aborted!');
           _halted = true;
 
           var message = Message();

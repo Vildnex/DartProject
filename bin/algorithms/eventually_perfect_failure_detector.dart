@@ -9,7 +9,7 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
   final System _sys;
   final int DELTA = 100;
 
-  List<ProcessId> _suspected = <ProcessId>[];
+  final List<ProcessId> _suspected = <ProcessId>[];
   List<ProcessId> _aliveProcesses = <ProcessId>[];
   int _delay;
 
@@ -29,7 +29,7 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
           _suspected.forEach((process) {
             if (_aliveProcesses.contains(process)) {
               _delay += DELTA;
-              print('increase delay with: ' + _delay.toString());
+              print('Increased delay to: ' + _delay.toString());
 //              return Future.value(false);
               return;
             }

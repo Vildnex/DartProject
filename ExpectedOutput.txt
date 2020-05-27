@@ -1,0 +1,125 @@
+Attempting to establish connection to HUB:  "127.0.0.1"  on port:  "5000"
+System(0x564edae6a070)  Abstraction PL listening on:  QHostAddress("127.0.0.1")  port:  5004
+System(0x7fee18016a30)  Abstraction PL listening on:  QHostAddress("127.0.0.1")  port:  5005
+System(0x7fee18013020)  Abstraction PL listening on:  QHostAddress("127.0.0.1")  port:  5006
+Received app propose from hub!
+Holaa
+System:  System(0x564edae6a070)  has the following processids:
+Host:  "127.0.0.1" port:  5004 owner:  "daniel" index:  1 rank:  1
+Host:  "127.0.0.1" port:  5005 owner:  "daniel" index:  2 rank:  2
+Host:  "127.0.0.1" port:  5006 owner:  "daniel" index:  3 rank:  3
+Trust process:  5006
+App proposed:  64
+Received app propose from hub!
+Holaa
+System:  System(0x7fee18016a30)  has the following processids:
+Host:  "127.0.0.1" port:  5004 owner:  "daniel" index:  1 rank:  1
+Host:  "127.0.0.1" port:  5005 owner:  "daniel" index:  2 rank:  2
+Host:  "127.0.0.1" port:  5006 owner:  "daniel" index:  3 rank:  3
+Trust process:  5006
+Received app propose from hub!
+App proposed:  89
+Holaa
+System:  System(0x7fee18013020)  has the following processids:
+Host:  "127.0.0.1" port:  5004 owner:  "daniel" index:  1 rank:  1
+Host:  "127.0.0.1" port:  5005 owner:  "daniel" index:  2 rank:  2
+Host:  "127.0.0.1" port:  5006 owner:  "daniel" index:  3 rank:  3
+Trust process:  5006
+App proposed:  21
+ep propose
+Ep propose!
+Sent to bebBroadcast!
+Start epoch!!!
+Start epoch!!!
+Start epoch!!!
+Ep read!  from:  5006
+Ep read!  from:  5006
+Ep aborted!
+Ep aborted!
+Ep aborted!
+Started new epoch!
+Started new epoch!
+Started new epoch!
+ep propose
+Ep read!  from:  5006
+Ep propose!
+Sent to bebBroadcast!
+Ep state passed through here
+Ep state!
+1
+Ep state passed through here
+Ep state!
+2
+21
+Ep state passed through here
+Ep state!
+1
+Ep read!  from:  5006
+Ep read!  from:  5006
+Ep read!  from:  5006
+Ep write!
+sent ep write to:  5006
+Ep write!
+sent ep write to:  5006
+Ep write!
+sent ep write to:  5006
+Ep state passed through here
+Ep state!
+2
+21
+Ep state passed through here
+Ep state!
+1
+Ep state passed through here
+Ep state!
+2
+21
+Ep accepted!
+Ep accepted!
+Ep accepted!
+Ep write!
+sent ep write to:  5006
+Ep write!
+sent ep write to:  5006
+Ep write!
+sent ep write to:  5006
+Ep write!
+sent ep write to:  5006
+Ep write!
+sent ep write to:  5006
+Ep write!
+sent ep write to:  5006
+Ep decide!
+ep decide!
+Ep decide!
+UC DECIDED:  21
+ep decide!
+Ep decide!
+Ep accepted!
+Ep accepted!
+Ep accepted!
+UC DECIDED:  21
+ep decide!
+Ep accepted!
+UC DECIDED:  21
+Ep accepted!
+Ep accepted!
+Ep decide!
+Ep decide!
+Ep decide!
+ep decide!
+ep decide!
+ep decide!
+Ep decide!
+Ep decide!
+ep decide!
+ep decide!
+Ep decide!
+Ep decide!
+ep decide!
+ep decide!
+Ep decide!
+ep decide!
+Ep decide!
+ep decide!
+ 
