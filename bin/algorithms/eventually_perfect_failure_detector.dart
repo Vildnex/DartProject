@@ -26,7 +26,7 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
       case Message_Type.EPFD_TIMEOUT:
         {
           for (var process in _suspected) {
-            if (_aliveProcesses.contains(process)) {
+            if (contains(_aliveProcesses, process)) {
               _delay += DELTA;
               print('Increased delay to: ' + _delay.toString());
               break;
@@ -36,14 +36,20 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
             if (process.port == _sys.self().port) {
               continue;
             }
-            if (!contains(_aliveProcesses, process) && !contains(_suspected, process)) {
+            var f1 = !contains(_aliveProcesses, process);
+            var f2 = !contains(_suspected, process);
+
+            var f_1 = contains(_aliveProcesses, process);
+            var f_2 = contains(_suspected, process);
+            var kk = 0;
+            if (f1 && f2) {
               _suspected.add(process);
               var message = Message();
               message.type = Message_Type.EPFD_SUSPECT;
               message.epfdSuspect = EpfdSuspect();
               message.epfdSuspect.process = process;
               _sys.emitMessage(message);
-            } else if (contains(_aliveProcesses, process) && contains(_suspected, process)) {
+            } else if (f_1 && f_2) {
               remove(_suspected, process);
 
               var message = Message();
