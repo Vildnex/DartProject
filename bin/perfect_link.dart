@@ -26,9 +26,9 @@ class PerfectLike extends AlgInterface {
         var m = Message();
         m.type = Message_Type.PL_DELIVER;
 
-//        if (msg.networkMessage.message.type == Message_Type.APP_PROPOSE) {
-//          print('RECEIVED app propose');
-//        }
+        if (msg.networkMessage.message.type == Message_Type.APP_PROPOSE) {
+          print('Received app propose from hub!');
+        }
         var plDeliver = PlDeliver();
 
 //          plDeliver.message = Message();
@@ -52,46 +52,47 @@ class PerfectLike extends AlgInterface {
     }, onError: (err) => print(err));
   }
 
+//  @override
+//  Future<bool> handle(Message msg) async {
   @override
-  Future<bool> handle(Message msg) async {
+  bool handle(Message msg) {
     if (msg.type == Message_Type.PL_SEND) {
       var ip = _server.address.host;
       var port = _server.port;
       var receiverPort = msg.plSend.destination.port;
 //      print('PL_SEND');
-      final _socket = await Socket.connect(ip, receiverPort);
-//      print('CONNECTED');
-
-      try {
+      Socket.connect(ip, receiverPort).then((_socket) {
+//        try {
 //        print('SUCCESS');
-        var networkMsg = NetworkMessage();
-        networkMsg.senderHost = ip;
-        networkMsg.senderListeningPort = port;
-        networkMsg.message = Message();
-        networkMsg.message.mergeFromMessage(msg.plSend.message);
+          var networkMsg = NetworkMessage();
+          networkMsg.senderHost = ip;
+          networkMsg.senderListeningPort = port;
+          networkMsg.message = Message();
+          networkMsg.message.mergeFromMessage(msg.plSend.message);
 
-        var toSend = Message();
-        toSend.type = Message_Type.NETWORK_MESSAGE;
-        toSend.abstractionId = msg.abstractionId;
-        toSend.systemId = msg.systemId;
-        toSend.networkMessage = networkMsg;
+          var toSend = Message();
+          toSend.type = Message_Type.NETWORK_MESSAGE;
+          toSend.abstractionId = msg.abstractionId;
+          toSend.systemId = msg.systemId;
+          toSend.networkMessage = networkMsg;
 
-        var message = Uint8List(4);
-        var byteData = ByteData.view(message.buffer);
-        var uint8 = toSend.writeToBuffer();
+          var message = Uint8List(4);
+          var byteData = ByteData.view(message.buffer);
+          var uint8 = toSend.writeToBuffer();
 
-        byteData.setUint32(0, uint8.lengthInBytes);
+          byteData.setUint32(0, uint8.lengthInBytes);
 
-        _socket.add(message);
-        _socket.add(uint8);
-        await _socket.flush();
-        return true;
-      } catch (e) {
-        print('ERR: ' + e.toString());
-        return true;
-      } finally {
-        await _socket.close();
-      }
+          _socket.add(message);
+          _socket.add(uint8);
+          _socket.flush();
+          return true;
+//        } catch (e) {
+//          print('ERR: ' + e.toString());
+//          return true;
+//        } finally {
+//          _socket.close();
+//        }
+      });
     }
     return false;
   }

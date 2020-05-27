@@ -18,10 +18,10 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
     delay(_delay);
   }
 
-//  @override
-//  bool handle(Message msg) {
   @override
-  Future<bool> handle(Message msg) async {
+  bool handle(Message msg) {
+//  @override
+//  Future<bool> handle(Message msg) async {
     switch (msg.type) {
       case Message_Type.EPFD_TIMEOUT:
         {

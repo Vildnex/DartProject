@@ -14,10 +14,10 @@ class EpochChange extends AlgInterface {
     _ts = _sys.self().rank;
   }
 
-//  @override
-//  bool handle(Message msg) {
   @override
-  Future<bool> handle(Message msg) async {
+  bool handle(Message msg) {
+//  @override
+//  Future<bool> handle(Message msg) async {
     switch (msg.type) {
       case Message_Type.ELD_TRUST:
         {
@@ -40,7 +40,7 @@ class EpochChange extends AlgInterface {
         return true;
       case Message_Type.BEB_DELIVER:
         {
-          var ok=0;
+          var ok = 0;
           if (msg.bebDeliver.message.type == Message_Type.EC_NEW_EPOCH_) {
             var newTs = msg.bebDeliver.message.ecNewEpoch.timestamp;
             if (msg.bebDeliver.sender.port == _trusted.port && newTs > _lastTs) {
