@@ -40,6 +40,7 @@ class EpochChange extends AlgInterface {
         return true;
       case Message_Type.BEB_DELIVER:
         {
+          var ok=0;
           if (msg.bebDeliver.message.type == Message_Type.EC_NEW_EPOCH_) {
             var newTs = msg.bebDeliver.message.ecNewEpoch.timestamp;
             if (msg.bebDeliver.sender.port == _trusted.port && newTs > _lastTs) {
@@ -66,10 +67,11 @@ class EpochChange extends AlgInterface {
             }
           }
         }
-        return Future.value(true);
-//        return true;
+//        return Future.value(true);
+        return true;
       case Message_Type.PL_DELIVER:
         {
+          var ki = 0;
           if (msg.plDeliver.message.type == Message_Type.EC_NACK_ && _trusted.port == _sys.self().port) {
             _ts += _sys.processes.length;
             var message = Message();

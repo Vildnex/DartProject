@@ -24,18 +24,18 @@ class EventualLeadDetector extends AlgInterface {
           _suspected.add(msg.epfdSuspect.process);
           checkAndSetLeader();
         }
-        return Future.value(true);
-//        return true;
+//        return Future.value(true);
+        return true;
       case Message_Type.EPFD_RESTORE:
         {
           _suspected.remove(msg.epfdSuspect.process);
           checkAndSetLeader();
         }
-        return Future.value(true);
-//        return true;
+//        return Future.value(true);
+        return true;
     }
-    return Future.value(false);
-//    return false;
+//    return Future.value(false);
+    return false;
   }
 
   void checkAndSetLeader() {
@@ -50,8 +50,9 @@ class EventualLeadDetector extends AlgInterface {
       }
     });
 //    print("TEST");
-    _leader ??= leader;
-    if (_leader.port != leader.port) {
+//    _leader ??= leader;
+    if (_leader?.port != leader?.port) {
+      _leader = leader;
       var message = Message();
       message.eldTrust = EldTrust();
       message.type = Message_Type.ELD_TRUST;

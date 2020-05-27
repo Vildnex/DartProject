@@ -158,8 +158,8 @@ class EpochConsensus extends AlgInterface {
               return true;
           }
         }
-        return Future.value(true);
-//        return true;
+//        return Future.value(true);
+        return true;
       case Message_Type.EP_ABORT:
         {
           print('Ep aborted!');
@@ -175,10 +175,10 @@ class EpochConsensus extends AlgInterface {
 
           _sys.emitMessage(message);
         }
-        return Future.value(true);
-      //        return true;
+//        return Future.value(true);
+              return true;
     }
-    return Future.value(false);
-//    return false;
+//    return Future.value(false);
+    return false;
   }
 }

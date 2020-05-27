@@ -48,8 +48,9 @@ class System {
 
   Future<void> init() async {
     _receiveMessage();
-    _algorithms.add(PerfectLike(this, _ip, port));
-
+//    _algorithms.add(PerfectLike(this, _ip, port));
+    var pf = await PerfectLike.connect(this, _ip, port);
+    _algorithms.add(pf);
     var socket = await Socket.connect(_ip, hub_port);
     print('connected');
 
@@ -170,14 +171,14 @@ class System {
 
   void begin() {
 //    _algorithms.add(BestEffortBroadcast(this));
-    _algorithms.add(EpochChange(this));
-    _algorithms.add(EventualLeadDetector(this));
     _algorithms.add(EventuallyPerfectFailureDetector(this));
+    _algorithms.add(EventualLeadDetector(this));
+    _algorithms.add(EpochChange(this));
     _algorithms.add(UniformConsensus(this));
     _algorithms.add(BestEffortBroadcast(this));
   }
 
   void beginNewEpoch(int timeStamp, Tuple2<int, Value> state) {
-    _algorithms.add(EpochConsensus(this, timeStamp, state));
+    _algorithms.insert(0, EpochConsensus(this, timeStamp, state));
   }
 }

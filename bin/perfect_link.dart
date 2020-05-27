@@ -10,48 +10,88 @@ class PerfectLike extends AlgInterface {
   int port;
   System sys;
 
-  PerfectLike(this.sys, this.ip, this.port) {
-    ServerSocket.bind(ip, port).then((server) {
-      print('connect to server');
-      server.listen((Socket socket) {
-        socket.listen((List<int> data) {
-          print('RECEIVE DATA');
-          var msg = Message();
-          msg.mergeFromBuffer(data.sublist(4));
+  PerfectLike._(this.sys, this.ip, this.port);
 
-          if (msg.networkMessage.message.type == Message_Type.EPFD_HEARTBEAT_REQUEST) {
-            var d = 5;
+//    ServerSocket.bind(ip, port).then((server) {
+//      print('connect to server');
+//      server.listen((Socket socket) {
+//        socket.listen((List<int> data) {
+//          print('RECEIVE DATA');
+//          var msg = Message();
+//          msg.mergeFromBuffer(data.sublist(4));
+//
+//          if (msg.networkMessage.message.type == Message_Type.EPFD_HEARTBEAT_REQUEST) {
+//            var d = 5;
+//          }
+//          var m = Message();
+//          m.type = Message_Type.PL_DELIVER;
+//
+//          if (msg.networkMessage.message.type == Message_Type.APP_PROPOSE) {
+//            print('RECEIVED app propose');
+//          }
+//          var plDeliver = PlDeliver();
+//
+////          plDeliver.message = Message();
+//          plDeliver.message = msg.networkMessage.message;
+//
+//          m.abstractionId = msg.networkMessage.message.abstractionId;
+//          m.plDeliver = plDeliver;
+//
+////          TODO: CHECK IT LATER
+////          var d = msg.plDeliver.sender.port;
+////          sys.processes.forEach((process) {
+//          for (var process in sys.processes) {
+//            if (process.port == msg.networkMessage.senderListeningPort) {
+//              m.plDeliver.sender = process;
+//            }
+//          }
+//          sys.emitMessage(m);
+//        }, onDone: () {
+//          print('done');
+//        });
+//        socket.flush();
+//        socket.close();
+//      });
+//    }, onError: (err) => print(err));
+//  }
+
+  static Future<PerfectLike> connect(System sys, String ip, int port) async {
+    var server = await ServerSocket.bind(ip, port);
+    print('connect to server');
+    server.listen((Socket socket) {
+      socket.listen((List<int> data) {
+        print('RECEIVE DATA');
+        var msg = Message();
+        msg.mergeFromBuffer(data.sublist(4));
+
+        if (msg.networkMessage.message.type == Message_Type.EPFD_HEARTBEAT_REQUEST) {
+          var d = 5;
+        }
+        var m = Message();
+        m.type = Message_Type.PL_DELIVER;
+
+        if (msg.networkMessage.message.type == Message_Type.APP_PROPOSE) {
+          print('RECEIVED app propose');
+        }
+        var plDeliver = PlDeliver();
+
+        plDeliver.message = msg.networkMessage.message;
+        m.abstractionId = msg.networkMessage.message.abstractionId;
+        m.plDeliver = plDeliver;
+
+        for (var process in sys.processes) {
+          if (process.port == msg.networkMessage.senderListeningPort) {
+            m.plDeliver.sender = process;
           }
-          var m = Message();
-          m.type = Message_Type.PL_DELIVER;
-
-          if (msg.networkMessage.message.type == Message_Type.APP_PROPOSE) {
-            print('RECEIVED app propose');
-          }
-          var plDeliver = PlDeliver();
-
-//          plDeliver.message = Message();
-          plDeliver.message = msg.networkMessage.message;
-
-          m.abstractionId = msg.networkMessage.message.abstractionId;
-          m.plDeliver = plDeliver;
-
-//          TODO: CHECK IT LATER
-//          var d = msg.plDeliver.sender.port;
-//          sys.processes.forEach((process) {
-          for (var process in sys.processes) {
-            if (process.port == msg.networkMessage.senderListeningPort) {
-              m.plDeliver.sender = process;
-            }
-          }
-          sys.emitMessage(m);
-        }, onDone: () {
-          print('done');
-        });
-        socket.flush();
-        socket.close();
+        }
+        sys.emitMessage(m);
+      }, onDone: () {
+        print('done');
       });
-    }, onError: (err) => print(err));
+      socket.flush();
+      socket.close();
+    });
+    return PerfectLike._(sys, ip, port);
   }
 
   @override

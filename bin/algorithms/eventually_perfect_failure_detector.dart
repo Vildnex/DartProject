@@ -26,14 +26,13 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
     switch (msg.type) {
       case Message_Type.EPFD_TIMEOUT:
         {
-          _suspected.forEach((process) {
+          for (var process in _suspected) {
             if (_aliveProcesses.contains(process)) {
               _delay += DELTA;
               print('Increased delay to: ' + _delay.toString());
-//              return Future.value(false);
-              return;
+              break;
             }
-          });
+          }
           for (var process in _sys.processes) {
             if (process.port == _sys.self().port) {
               continue;
@@ -90,6 +89,7 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
           }
         }
     }
+
 //    return Future.value(false);
     return false;
   }
