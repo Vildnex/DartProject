@@ -95,11 +95,13 @@ class System {
       if (msg.type == Message_Type.PL_DELIVER) {
         if (msg.plDeliver.message.type == Message_Type.APP_PROPOSE) {
           msg.plDeliver.message.appPropose.processes.forEach((process) {
-            print('HOST: ' + process.host);
-            print('PORT: ' + process.port.toString());
-            print('OWNER: ' + process.owner);
-            print('INDEX: ' + process.index.toString());
-            print('RANK: ' + process.rank.toString());
+            var host = 'HOST: ' + process.host;
+            var port = 'PORT: ' + process.port.toString();
+            var owner = 'OWNER: ' + process.owner;
+            var index = 'INDEX: ' + process.index.toString();
+            var rank = 'RANK: ' + process.rank.toString();
+            var final_msg = host + ' | ' + port + ' | ' + owner + ' | ' + index + ' | ' + rank;
+            print(final_msg);
             _processes.add(process);
           });
           begin();

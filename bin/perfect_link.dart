@@ -16,7 +16,7 @@ class PerfectLike extends AlgInterface {
     print('connect to server');
     _server.listen((socket) {
       socket.listen((List<int> data) {
-        print('RECEIVE DATA');
+//        print('RECEIVE DATA');
         var msg = Message();
         msg.mergeFromBuffer(data.sublist(4));
 
@@ -26,9 +26,9 @@ class PerfectLike extends AlgInterface {
         var m = Message();
         m.type = Message_Type.PL_DELIVER;
 
-        if (msg.networkMessage.message.type == Message_Type.APP_PROPOSE) {
-          print('RECEIVED app propose');
-        }
+//        if (msg.networkMessage.message.type == Message_Type.APP_PROPOSE) {
+//          print('RECEIVED app propose');
+//        }
         var plDeliver = PlDeliver();
 
 //          plDeliver.message = Message();
@@ -45,7 +45,7 @@ class PerfectLike extends AlgInterface {
         }
         _sys.emitMessage(m);
       }, onDone: () {
-        print('done');
+//        print('done');
       });
       socket.flush();
       socket.close();
@@ -58,12 +58,12 @@ class PerfectLike extends AlgInterface {
       var ip = _server.address.host;
       var port = _server.port;
       var receiverPort = msg.plSend.destination.port;
-      print('PL_SEND');
+//      print('PL_SEND');
       final _socket = await Socket.connect(ip, receiverPort);
-      print('CONNECTED');
+//      print('CONNECTED');
 
       try {
-        print('SUCCESS');
+//        print('SUCCESS');
         var networkMsg = NetworkMessage();
         networkMsg.senderHost = ip;
         networkMsg.senderListeningPort = port;
@@ -85,6 +85,7 @@ class PerfectLike extends AlgInterface {
         _socket.add(message);
         _socket.add(uint8);
         await _socket.flush();
+        return true;
       } catch (e) {
         print('ERR: ' + e.toString());
         return true;
