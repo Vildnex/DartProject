@@ -6,59 +6,15 @@ import 'interface/alg_interface.dart';
 import 'system.dart';
 
 class PerfectLike extends AlgInterface {
-  String ip;
-  int port;
-  System sys;
+  final ServerSocket _server;
+  final System _sys;
 
-  PerfectLike._(this.sys, this.ip, this.port);
+  static Future<PerfectLike> connect(System sys, String ip, int port) async =>
+      PerfectLike._(sys, await ServerSocket.bind(ip, port).catchError((err) => print(err)));
 
-//    ServerSocket.bind(ip, port).then((server) {
-//      print('connect to server');
-//      server.listen((Socket socket) {
-//        socket.listen((List<int> data) {
-//          print('RECEIVE DATA');
-//          var msg = Message();
-//          msg.mergeFromBuffer(data.sublist(4));
-//
-//          if (msg.networkMessage.message.type == Message_Type.EPFD_HEARTBEAT_REQUEST) {
-//            var d = 5;
-//          }
-//          var m = Message();
-//          m.type = Message_Type.PL_DELIVER;
-//
-//          if (msg.networkMessage.message.type == Message_Type.APP_PROPOSE) {
-//            print('RECEIVED app propose');
-//          }
-//          var plDeliver = PlDeliver();
-//
-////          plDeliver.message = Message();
-//          plDeliver.message = msg.networkMessage.message;
-//
-//          m.abstractionId = msg.networkMessage.message.abstractionId;
-//          m.plDeliver = plDeliver;
-//
-////          TODO: CHECK IT LATER
-////          var d = msg.plDeliver.sender.port;
-////          sys.processes.forEach((process) {
-//          for (var process in sys.processes) {
-//            if (process.port == msg.networkMessage.senderListeningPort) {
-//              m.plDeliver.sender = process;
-//            }
-//          }
-//          sys.emitMessage(m);
-//        }, onDone: () {
-//          print('done');
-//        });
-//        socket.flush();
-//        socket.close();
-//      });
-//    }, onError: (err) => print(err));
-//  }
-
-  static Future<PerfectLike> connect(System sys, String ip, int port) async {
-    var server = await ServerSocket.bind(ip, port);
+  PerfectLike._(this._sys, this._server) {
     print('connect to server');
-    server.listen((Socket socket) {
+    _server.listen((socket) {
       socket.listen((List<int> data) {
         print('RECEIVE DATA');
         var msg = Message();
@@ -75,28 +31,32 @@ class PerfectLike extends AlgInterface {
         }
         var plDeliver = PlDeliver();
 
+//          plDeliver.message = Message();
         plDeliver.message = msg.networkMessage.message;
+
         m.abstractionId = msg.networkMessage.message.abstractionId;
         m.plDeliver = plDeliver;
 
-        for (var process in sys.processes) {
+//          TODO: CHECK IT LATER
+        for (var process in _sys.processes) {
           if (process.port == msg.networkMessage.senderListeningPort) {
             m.plDeliver.sender = process;
           }
         }
-        sys.emitMessage(m);
+        _sys.emitMessage(m);
       }, onDone: () {
         print('done');
       });
       socket.flush();
       socket.close();
-    });
-    return PerfectLike._(sys, ip, port);
+    }, onError: (err) => print(err));
   }
 
   @override
   Future<bool> handle(Message msg) async {
     if (msg.type == Message_Type.PL_SEND) {
+      var ip = _server.address.host;
+      var port = _server.port;
       var receiverPort = msg.plSend.destination.port;
       print('PL_SEND');
       final _socket = await Socket.connect(ip, receiverPort);
@@ -128,8 +88,6 @@ class PerfectLike extends AlgInterface {
         _socket.add(message);
         _socket.add(uint8);
         await _socket.flush();
-
-//        return Future.value(true);
       } catch (e) {
         print('ERR: ' + e.toString());
         return true;

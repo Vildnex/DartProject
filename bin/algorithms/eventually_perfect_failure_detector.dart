@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import '../../build/gen/data.pb.dart';
 import '../interface/alg_interface.dart';
@@ -75,6 +74,8 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
             message.type = Message_Type.PL_SEND;
             message.plSend = PlSend();
             message.plSend.destination = msg.plDeliver.sender;
+
+            var d = _sys.processes.length;
             message.plSend.message = Message();
             message.plSend.message.type = Message_Type.EPFD_HEARTBEAT_REPLY;
             message.abstractionId = 'epfd';
@@ -89,8 +90,6 @@ class EventuallyPerfectFailureDetector extends AlgInterface {
           }
         }
     }
-
-//    return Future.value(false);
     return false;
   }
 

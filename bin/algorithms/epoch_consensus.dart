@@ -159,7 +159,7 @@ class EpochConsensus extends AlgInterface {
           }
         }
 //        return Future.value(true);
-        return true;
+        return false;
       case Message_Type.EP_ABORT:
         {
           print('Ep aborted!');
