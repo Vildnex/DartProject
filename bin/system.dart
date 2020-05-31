@@ -26,7 +26,7 @@ class System {
 
   String get ip => _ip;
 
-  final String _systemID = 'system1';
+  final String _systemID = 'sys-1';
 
   String get systemID => _systemID;
 

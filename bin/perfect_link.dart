@@ -85,6 +85,7 @@ class PerfectLike extends AlgInterface {
         _socket.add(message);
         _socket.add(uint8);
         await _socket.flush();
+        await _socket.close();
         return true;
       } catch (e) {
         print('ERR: ' + e.toString());
