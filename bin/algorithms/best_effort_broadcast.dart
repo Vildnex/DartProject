@@ -7,10 +7,10 @@ class BestEffortBroadcast extends AlgInterface {
 
   BestEffortBroadcast(this._sys);
 
-  @override
-  bool handle(Message msg) {
 //  @override
-//  Future<bool> handle(Message msg) async {
+//  bool handle(Message msg) {
+  @override
+  Future<bool> handle(Message msg) async {
     switch (msg.type) {
       case Message_Type.BEB_BROADCAST:
         {

@@ -22,10 +22,8 @@ class UniformConsensus extends AlgInterface {
     _sys.beginNewEpoch(0, Tuple2<int, Value>(0, _val));
   }
 
-//  @override
-//  Future<bool> handle(Message msg) async {
   @override
-  bool handle(Message msg) {
+  Future<bool> handle(Message msg) async {
     switch (msg.type) {
       case Message_Type.UC_PROPOSE:
         {
@@ -79,7 +77,7 @@ class UniformConsensus extends AlgInterface {
     if (_etsLeadPair.item2.port == _sys.self().port && _val.defined && !_proposed) {
       _proposed = true;
       print('ep propose');
-      var message = Message();
+      var message  = Message();
       message.type = Message_Type.EP_PROPOSE;
       message.epPropose = EpPropose();
       message.epPropose.value = _val;

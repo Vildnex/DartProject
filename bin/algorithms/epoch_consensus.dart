@@ -18,10 +18,10 @@ class EpochConsensus extends AlgInterface {
     _temp.defined = false;
   }
 
-  @override
-  bool handle(Message msg) {
 //  @override
-//  Future<bool> handle(Message msg) async {
+//  bool handle(Message msg) {
+  @override
+  Future<bool> handle(Message msg) async {
     if (_halted) {
       return false;
 //      return Future.value(false);

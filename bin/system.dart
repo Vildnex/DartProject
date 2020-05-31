@@ -46,48 +46,43 @@ class System {
     return _processes.firstWhere((process) => process.port == port);
   }
 
-  void init() {
+  Future<void> init() async {
     _receiveMessage();
-//    var pf = await PerfectLike.connect(this, _ip, port);
-    PerfectLike.connect(this, _ip, port).then((PerfectLike pl) {
-      _algorithms.add(pl);
-    });
-    Socket.connect(_ip, hub_port).then((socket) {
-      print('connected');
+    var pf = await PerfectLike.connect(this, _ip, port);
+    _algorithms.add(pf);
+    var socket = await Socket.connect(_ip, hub_port);
+    print('connected');
 
-      var appReg = AppRegistration();
-      appReg.index = index;
-      appReg.owner = 'vlad';
+    var appReg = AppRegistration();
+    appReg.index = index;
+    appReg.owner = 'vlad';
 
-      var appRegMsg = Message();
-      appRegMsg.type = Message_Type.APP_REGISTRATION;
-      appRegMsg.appRegistration = appReg;
-      appRegMsg.abstractionId = _absId;
-      appRegMsg.messageUuid = 'appregistration';
-      appRegMsg.systemId = _systemID;
+    var appRegMsg = Message();
+    appRegMsg.type = Message_Type.APP_REGISTRATION;
+    appRegMsg.appRegistration = appReg;
+    appRegMsg.abstractionId = _absId;
+    appRegMsg.messageUuid = 'appregistration';
+    appRegMsg.systemId = _systemID;
 
-      var networkMsg = NetworkMessage();
-      networkMsg.message = appRegMsg;
-      networkMsg.senderHost = _ip;
-      networkMsg.senderListeningPort = port;
+    var networkMsg = NetworkMessage();
+    networkMsg.message = appRegMsg;
+    networkMsg.senderHost = _ip;
+    networkMsg.senderListeningPort = port;
 
-      var toSend = Message();
-      toSend.networkMessage = networkMsg;
-      toSend.type = Message_Type.NETWORK_MESSAGE;
+    var toSend = Message();
+    toSend.networkMessage = networkMsg;
+    toSend.type = Message_Type.NETWORK_MESSAGE;
 
-      var message = Uint8List(4);
-      var byteData = ByteData.view(message.buffer);
+    var message = Uint8List(4);
+    var byteData = ByteData.view(message.buffer);
 
-      var buffer = toSend.writeToBuffer();
-      byteData.setUint32(0, buffer.lengthInBytes);
+    var buffer = toSend.writeToBuffer();
+    byteData.setUint32(0, buffer.lengthInBytes);
 
-      socket.add(message);
-      socket.add(buffer);
-      socket.flush();
-//      socket.close();
-    });
-
-    //    var socket = await Socket.connect(_ip, hub_port);
+    socket.add(message);
+    socket.add(buffer);
+    await socket.flush();
+    await socket.close();
   }
 
   void emitMessage(Message msg) {
@@ -95,12 +90,10 @@ class System {
   }
 
   void _receiveMessage() {
-    _eventBus.on<Message>().listen((Message msg) {
+    _eventBus.on<Message>().listen((Message msg) async {
       var used = false;
       if (msg.type == Message_Type.PL_DELIVER) {
         if (msg.plDeliver.message.type == Message_Type.APP_PROPOSE) {
-          print('Hello');
-          print('System: ' + index.toString() + ' has the following processids');
           msg.plDeliver.message.appPropose.processes.forEach((process) {
             var host = 'HOST: ' + process.host;
             var port = 'PORT: ' + process.port.toString();
@@ -126,46 +119,44 @@ class System {
 
       if (msg.type == Message_Type.UC_DECIDE) {
         print('UcDecided: ' + msg.ucDecide.value.v.toString());
-//        var socket = await Socket.connect(ip, hub_port);
-        Socket.connect(ip, hub_port).then((socket) {
-          var appDecide = AppDecide();
-          appDecide.value = msg.ucDecide.value;
+        var socket = await Socket.connect(ip, hub_port);
+        var appDecide = AppDecide();
+        appDecide.value = msg.ucDecide.value;
 
-          var appDecideMsg = Message();
-          appDecideMsg.type = Message_Type.APP_DECIDE;
-          appDecideMsg.appDecide = appDecide;
-          appDecideMsg.abstractionId = _absId;
-          appDecideMsg.systemId = _systemID;
+        var appDecideMsg = Message();
+        appDecideMsg.type = Message_Type.APP_DECIDE;
+        appDecideMsg.appDecide = appDecide;
+        appDecideMsg.abstractionId = _absId;
+        appDecideMsg.systemId = _systemID;
 
-          var networkMsg = NetworkMessage();
-          networkMsg.message = appDecideMsg;
-          networkMsg.senderHost = ip;
-          networkMsg.senderListeningPort = port;
+        var networkMsg = NetworkMessage();
+        networkMsg.message = appDecideMsg;
+        networkMsg.senderHost = ip;
+        networkMsg.senderListeningPort = port;
 
-          var toSend = Message();
-          toSend.networkMessage = networkMsg;
-          toSend.type = Message_Type.NETWORK_MESSAGE;
+        var toSend = Message();
+        toSend.networkMessage = networkMsg;
+        toSend.type = Message_Type.NETWORK_MESSAGE;
 
-          var message = Uint8List(4);
-          var byteData = ByteData.view(message.buffer);
+        var message = Uint8List(4);
+        var byteData = ByteData.view(message.buffer);
 
-          var buffer = toSend.writeToBuffer();
+        var buffer = toSend.writeToBuffer();
 
-          byteData.setUint32(0, buffer.lengthInBytes);
+        byteData.setUint32(0, buffer.lengthInBytes);
 
-          socket.add(message);
-          socket.add(buffer);
-          socket.flush();
-          socket.close();
-          used = true;
-        });
+        socket.add(message);
+        socket.add(buffer);
+        await socket.flush();
+        await socket.close();
+        used = true;
       }
 
       if (used) {
         return;
       }
       for (var alg in _algorithms) {
-        if (alg.handle(msg)) {
+        if (await alg.handle(msg)) {
           return;
         }
       }
